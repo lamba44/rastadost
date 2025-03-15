@@ -11,25 +11,18 @@ import "./User.css";
 const User = () => {
   const navigate = useNavigate();
 
-  // Form fields for manually entered addresses.
+  // State definitions (pickup, drop, travelMode, etc.)
   const [pickup, setPickup] = useState("");
   const [drop, setDrop] = useState("");
   const [travelMode, setTravelMode] = useState("DRIVING");
-
-  // Stores the geocoded destinations (Pickup at index 0 and Dropoff at index 1)
   const [destinations, setDestinations] = useState([]);
-  // Stores the computed Directions result
   const [directions, setDirections] = useState(null);
-  // Stores route info (distance & duration)
   const [routeInfo, setRouteInfo] = useState(null);
-  // User's location for centering the map (but not pinned)
   const [userLocation, setUserLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
-
-  // Google Map reference for controlling the map (e.g., fitting bounds)
   const [mapRef, setMapRef] = useState(null);
 
-  // Utility: simple geocoding function.
+  // Geocoding function and get current location (unchanged)
   const geocodeAddress = (address) => {
     return new Promise((resolve, reject) => {
       if (!window.google) {
@@ -53,7 +46,6 @@ const User = () => {
     });
   };
 
-  // Get user's live location on mount (for centering the map only).
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -76,7 +68,6 @@ const User = () => {
     }
   }, []);
 
-  // When the user clicks "Show Route", geocode both addresses and compute the route.
   const handleShowRoute = async () => {
     if (!pickup || !drop) return;
     try {
@@ -94,7 +85,6 @@ const User = () => {
     }
   };
 
-  // Compute route using Google Directions Service.
   const calculateRoute = (pickupLoc, dropLoc) => {
     if (!pickupLoc || !dropLoc) return;
     new window.google.maps.DirectionsService().route(
@@ -107,8 +97,11 @@ const User = () => {
         if (status === "OK") {
           setDirections(result);
           const leg = result.routes[0].legs[0];
+          // Save both text and numeric values for distance.
           setRouteInfo({
-            distance: leg.distance.text,
+            distanceText: leg.distance.text,
+            // leg.distance.value is in meters, convert to km:
+            distanceValue: leg.distance.value / 1000,
             duration: leg.duration.text,
           });
           if (mapRef && result.routes[0].bounds) {
@@ -123,9 +116,43 @@ const User = () => {
     );
   };
 
-  const handleBookNow = () => {
-    // You can pass route info or booking details if needed.
-    navigate("/userride");
+  // Modified: Send input data to backend then navigate.
+  // Modified handleBookNow function in User.js
+  const handleBookNow = async () => {
+    // Ensure required data is available.
+    if (!pickup || !drop || !routeInfo) {
+      alert("Please enter valid locations and show the route first.");
+      return;
+    }
+    try {
+      // Prepare payload with source, destination, and numeric distance.
+      const payload = {
+        source: pickup,
+        destination: drop,
+        distance: routeInfo.distanceValue, // distance in km
+      };
+
+      // POST the trip data to the backend API.
+      const response = await fetch("http://localhost:5000/api/trips", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        const trip = await response.json();
+        console.log("Trip created:", trip);
+        // Continue to the next step, e.g., navigate to another page.
+        navigate("/userride");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to create trip:", errorData.message);
+        alert("Failed to create trip. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error connecting to the backend.");
+    }
   };
 
   // Map center: use userLocation if available; otherwise, default to (0,0)
@@ -134,7 +161,7 @@ const User = () => {
   return (
     <div className="mainbg">
       <div className="phoneview user-container">
-        {/* Map Area: Replaces the placeholder with the live Google Map */}
+        {/* Map Area */}
         <div className="map-area">
           <LoadScript
             googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
@@ -146,19 +173,13 @@ const User = () => {
               zoom={userLocation ? 13 : 2}
               onLoad={(map) => setMapRef(map)}
             >
-              {/* Render markers for Pickup and Dropoff (if available) */}
               {destinations.map((dest, idx) => (
                 <Marker
                   key={idx}
                   position={dest.location.toJSON()}
-                  label={{
-                    text: dest.label,
-                    color: "#fff",
-                  }}
+                  label={{ text: dest.label, color: "#fff" }}
                 />
               ))}
-
-              {/* Render route if available */}
               {directions && (
                 <DirectionsRenderer
                   directions={directions}
@@ -178,10 +199,9 @@ const User = () => {
           )}
         </div>
 
-        {/* Booking Panel: Contains inputs, route info, and booking button */}
+        {/* Booking Panel */}
         <div className="booking-panel">
           <h2 className="booking-title">Plan Your Ride</h2>
-
           <div className="location-inputs">
             <div className="input-wrapper">
               <label htmlFor="pickup">Pickup Location</label>
@@ -193,7 +213,6 @@ const User = () => {
                 onChange={(e) => setPickup(e.target.value)}
               />
             </div>
-
             <div className="input-wrapper">
               <label htmlFor="drop">Drop Location</label>
               <input
@@ -206,15 +225,15 @@ const User = () => {
             </div>
           </div>
 
-          {/* Button to trigger route calculation */}
           <button className="showroute-btn" onClick={handleShowRoute}>
             Show Route
           </button>
 
-          {/* Display route info if available */}
           {routeInfo && (
             <div className="estimates-row">
-              <p className="estimate-text">Distance: {routeInfo.distance}</p>
+              <p className="estimate-text">
+                Distance: {routeInfo.distanceText}
+              </p>
               <p className="estimate-text">
                 Estimated Duration: {routeInfo.duration}
               </p>

@@ -1,86 +1,101 @@
 .driverride-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .map-area {
-    flex: 1;
-    background-color: #e0f7fa;
-    border: 2px dashed #ccc;
-    border-radius: 6px;
-    margin: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    color: #666;
+  flex: 1;
+  background-color: #e0f7fa;
+  border: 2px dashed #ccc;
+  border-radius: 6px;
+  margin: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: #666;
 }
 
 .ride-panel {
-    background-color: #fff;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .ride-title {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    text-align: center;
-    color: #14141a;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #14141a;
 }
 
 .user-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .info-text {
-    font-size: 0.9rem;
-    color: #333;
+  font-size: 0.9rem;
+  color: #333;
 }
 
 .ride-actions {
-    display: flex;
-    justify-content: space-around;
-    gap: 1rem;
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
 }
 
 .support-btn {
-    background-color: #e74c3c;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
 }
 
 .support-btn:hover {
-    background-color: #c0392b;
+  background-color: #c0392b;
 }
 
 .endride-btn {
-    background-color: #f19d20;
-    color: #14141a;
-    border: none;
-    border-radius: 6px;
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
+  background-color: #f19d20;
+  color: #14141a;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
 }
 
 .endride-btn:hover {
-    background-color: #c87d19;
+  background-color: #c87d19;
+}
+
+.driverride-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* The map can take a fixed height or flex */
+.map-area {
+  flex: 1; /* so it can expand */
+  position: relative;
+  min-height: 300px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
 }

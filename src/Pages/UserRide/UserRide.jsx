@@ -1,5 +1,6 @@
 // src/components/UserRide.jsx
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   GoogleMap,
   LoadScript,
@@ -18,11 +19,20 @@ const UserRide = () => {
   const [markers, setMarkers] = useState([]);
   const [locationError, setLocationError] = useState(null);
 
+  // Local state for end ride status ("idle", "waiting", "ended")
+  const [endRideStatus, setEndRideStatus] = useState("idle");
+
+  // Navigation hook from react-router-dom
+  const navigate = useNavigate();
+
+  // Use environment variable for your backend base URL
+  const BASE_URL = import.meta.env.VITE_BACKEND;
+
   // 1) Poll for the active trip
   useEffect(() => {
     const fetchActiveTrip = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/trips/active");
+        const response = await fetch(`${BASE_URL}/api/trips/active`);
         if (response.ok) {
           const trip = await response.json();
           setActiveTrip(trip);
@@ -44,7 +54,7 @@ const UserRide = () => {
     fetchActiveTrip();
     const intervalId = setInterval(fetchActiveTrip, 5000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [BASE_URL]);
 
   // 2) Utility: geocode an address
   const geocodeAddress = (address) => {
@@ -117,6 +127,34 @@ const UserRide = () => {
   const mapCenter =
     markers.length > 0 ? markers[0].position : { lat: 19.076, lng: 72.8777 };
 
+  // 6) End Ride handler for user
+  const handleEndRide = async () => {
+    if (!activeTrip?._id) return;
+    setEndRideStatus("waiting");
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/trips/${activeTrip._id}/end-user`,
+        { method: "PUT" }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+        setEndRideStatus("ended");
+        // Redirect after a short delay
+        setTimeout(() => {
+          navigate("/user");
+        }, 2000);
+      } else {
+        alert(`Error: ${data.message}`);
+        setEndRideStatus("idle");
+      }
+    } catch (error) {
+      console.error("Error ending ride:", error);
+      alert("Error ending ride.");
+      setEndRideStatus("idle");
+    }
+  };
+
   return (
     <div className="mainbg">
       <div className="phoneview userride-container">
@@ -162,13 +200,11 @@ const UserRide = () => {
         <div className="driver-panel">
           <h2 className="ride-title">Your Ride</h2>
 
-          {/* Display "John Doe" if there's an active trip. Otherwise, show "Locating your ride..." */}
           {activeTrip ? (
             <div className="driver-info">
               <p>
                 <strong>Driver:</strong> John Doe
               </p>
-              {/* You can hardcode more details here if you want */}
             </div>
           ) : (
             <div className="loading">
@@ -186,13 +222,22 @@ const UserRide = () => {
             </button>
             <button
               className="endride-btn"
-              onClick={() =>
-                alert(
-                  "User ended the ride. Waiting for driver to also end. (Demo)"
-                )
+              onClick={handleEndRide}
+              disabled={
+                endRideStatus === "waiting" || endRideStatus === "ended"
               }
+              style={{
+                backgroundColor:
+                  endRideStatus === "waiting" || endRideStatus === "ended"
+                    ? "gray"
+                    : "",
+              }}
             >
-              End Ride
+              {endRideStatus === "waiting"
+                ? "Waiting..."
+                : endRideStatus === "ended"
+                ? "Ride Ended"
+                : "End Ride"}
             </button>
           </div>
 

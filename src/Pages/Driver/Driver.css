@@ -203,3 +203,17 @@
 .handshake-content h2 {
   margin-bottom: 1rem;
 }
+
+/* Driver.css */
+.points-btn {
+  position: absolute;
+  top: 10px;
+  left: 5px;
+  padding: 8px 12px;
+  font-size: 10px;
+  background-color: #248a6c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

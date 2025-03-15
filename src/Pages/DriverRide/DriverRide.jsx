@@ -1,4 +1,6 @@
+// src/components/DriverRide.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   GoogleMap,
   LoadScript,
@@ -18,32 +20,52 @@ const DriverRide = () => {
   const [trip, setTrip] = useState(null);
   const [userData, setUserData] = useState(null);
 
+  // Local state for end ride status ("idle", "waiting", "ended")
+  const [endRideStatus, setEndRideStatus] = useState("idle");
+
+  // Navigation hook from react-router-dom
+  const navigate = useNavigate();
+
+  // Use environment variable for your backend base URL
+  const BASE_URL = import.meta.env.VITE_BACKEND;
+
   // Handlers
   const handleSupport = () => {
     alert("Support has been triggered for this ride!");
   };
 
   const handleEndRide = async () => {
+    if (!trip?._id) return;
+    setEndRideStatus("waiting");
     try {
       const response = await fetch(
-        `http://localhost:5000/api/trips/${trip._id}/end-driver`,
+        `${BASE_URL}/api/trips/${trip._id}/end-driver`,
         { method: "PUT" }
       );
+      const data = await response.json();
       if (response.ok) {
-        alert("Ride ended successfully. Waiting for user confirmation.");
+        alert(data.message);
+        setEndRideStatus("ended");
+        // Redirect after a short delay to allow users to see the updated status.
+        setTimeout(() => {
+          navigate("/driver");
+        }, 2000);
       } else {
-        alert("Failed to end ride");
+        alert(`Error: ${data.message}`);
+        setEndRideStatus("idle");
       }
     } catch (error) {
       console.error("Error ending ride:", error);
+      alert("Error ending ride.");
+      setEndRideStatus("idle");
     }
   };
 
-  // Fetch active trip
+  // 1) Fetch active trip
   useEffect(() => {
     const fetchActiveTrip = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/trips/active");
+        const response = await fetch(`${BASE_URL}/api/trips/active`);
         if (!response.ok) throw new Error("Failed to fetch active trip");
         const data = await response.json();
         setTrip(data);
@@ -52,28 +74,31 @@ const DriverRide = () => {
       }
     };
     fetchActiveTrip();
-  }, []);
+  }, [BASE_URL]);
 
-  // Fetch user data when trip is available
+  // 2) Fetch user data when trip is available
   useEffect(() => {
     if (!trip || !trip.userId) return;
 
     const fetchUser = async () => {
       try {
-        // In DriverRide.js component
         const response = await fetch(
-          `http://localhost:5000/api/details/user/${trip.userId}`
+          `${BASE_URL}/api/details/user/${trip.userId}`
         );
-        const user = await response.json();
-        setUserData(user);
+        if (response.ok) {
+          const user = await response.json();
+          setUserData(user);
+        } else {
+          console.error("Failed to fetch user data");
+        }
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     };
     fetchUser();
-  }, [trip]);
+  }, [trip, BASE_URL]);
 
-  // Geocoding and mapping functions
+  // 3) Geocoding and mapping functions
   const geocodeAddress = async (address) => {
     return new Promise((resolve, reject) => {
       new window.google.maps.Geocoder().geocode(
@@ -86,7 +111,7 @@ const DriverRide = () => {
     });
   };
 
-  const calculateRoute = async (origin, destination) => {
+  const calculateRoute = (origin, destination) => {
     new window.google.maps.DirectionsService().route(
       {
         origin,
@@ -97,12 +122,14 @@ const DriverRide = () => {
         if (status === "OK") {
           setDirections(result);
           mapRef.fitBounds(result.routes[0].bounds);
+        } else {
+          console.error("Directions request failed:", status);
         }
       }
     );
   };
 
-  // Initialize map and route
+  // 4) Initialize map and route
   useEffect(() => {
     if (!trip || !window.google) return;
 
@@ -118,6 +145,7 @@ const DriverRide = () => {
 
         calculateRoute(origin, destination);
       } catch (error) {
+        console.error("Failed to load route:", error);
         setLocationError("Failed to load route");
       }
     };
@@ -204,8 +232,24 @@ const DriverRide = () => {
             <button className="support-btn" onClick={handleSupport}>
               Emergency Support
             </button>
-            <button className="endride-btn" onClick={handleEndRide}>
-              End Ride
+            <button
+              className="endride-btn"
+              onClick={handleEndRide}
+              disabled={
+                endRideStatus === "waiting" || endRideStatus === "ended"
+              }
+              style={{
+                backgroundColor:
+                  endRideStatus === "waiting" || endRideStatus === "ended"
+                    ? "gray"
+                    : "",
+              }}
+            >
+              {endRideStatus === "waiting"
+                ? "Waiting..."
+                : endRideStatus === "ended"
+                ? "Ride Ended"
+                : "End Ride"}
             </button>
           </div>
         </div>

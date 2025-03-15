@@ -1,21 +1,18 @@
 // src/components/Driver.jsx
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
-import handshakeAnimation from "../../assets/handshake.json"; // Or any path to an animation
-
+import handshakeAnimation from "../../assets/handshake.json"; // or wherever your animation is
 import "./Driver.css";
 
 const Driver = () => {
   const navigate = useNavigate();
 
-  // Use a real driver _id from your DB if you have one.
-  // If your schema is relaxed, any string might pass, but ideally an actual ID.
-  const simulatedDriverId = "64123456789abc1234567890";
-
+  // Duty-related state
   const [onDuty, setOnDuty] = useState(false);
 
-  // Request popup
+  // Request popup states
   const [showRequestPopup, setShowRequestPopup] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [popupInterval, setPopupInterval] = useState(null);
@@ -23,46 +20,66 @@ const Driver = () => {
   // Handshake animation
   const [showHandshakeAnimation, setShowHandshakeAnimation] = useState(false);
 
-  // Current trip
+  // Active trip
   const [currentTrip, setCurrentTrip] = useState(null);
 
-  // Stats (placeholders)
-  const [totalTripsThisMonth] = useState(25);
-  const [totalEarningsThisMonth] = useState(5200);
-  const [overallTotalTrips] = useState(120);
-  const [totalPoints] = useState(200);
+  // Driver data fetched from backend
+  const [driverData, setDriverData] = useState(null);
 
-  // Driver Info (placeholders for your UI)
-  const [driverName] = useState("John Doe");
-  const [vehicleNumber] = useState("ABC1234");
-  const [licenseNumber] = useState("XYZ-4567");
+  // Reference your backend from the environment variable
+  const BASE_URL = import.meta.env.VITE_BACKEND;
 
-  // Toggle On Duty
+  // Toggle duty
   const handleDutyToggle = () => {
     setOnDuty((prev) => !prev);
   };
 
-  // Poll for new, unassigned trips
+  // Navigate to Points page when button is clicked
+  const handleViewPoints = () => {
+    navigate("/points");
+  };
+
+  // Fetch driver details from backend (fetch first available driver)
+  useEffect(() => {
+    const fetchDriverData = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/details/driver`);
+        if (response.ok) {
+          const data = await response.json();
+          setDriverData(data);
+        } else {
+          console.error("Failed to fetch driver details");
+        }
+      } catch (error) {
+        console.error("Error fetching driver details:", error);
+      }
+    };
+
+    fetchDriverData();
+  }, [BASE_URL]);
+
+  // Poll for new unassigned trips every 5s if onDuty
   useEffect(() => {
     if (!onDuty) return;
 
     const fetchTrips = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/trips");
+        const response = await fetch(`${BASE_URL}/api/trips`);
         const trips = await response.json();
 
-        // Filter out trips that already have driverId or are ended
+        // Filter out assigned or ended trips
         const pendingTrips = trips.filter(
           (t) => !t.driverId && !t.endingUser && !t.endingDriver
         );
 
-        // If we find an unassigned trip & we aren't already showing a popup
         if (pendingTrips.length > 0 && !showRequestPopup) {
+          // Show the latest pending trip
           const latestTrip = pendingTrips[pendingTrips.length - 1];
           setCurrentTrip(latestTrip);
           setShowRequestPopup(true);
           setCountdown(10);
 
+          // Start a 10s countdown
           const intervalId = setInterval(() => {
             setCountdown((prev) => {
               if (prev <= 1) {
@@ -82,73 +99,105 @@ const Driver = () => {
 
     const intervalId = setInterval(fetchTrips, 5000);
     return () => clearInterval(intervalId);
-  }, [onDuty, showRequestPopup]);
+  }, [onDuty, showRequestPopup, BASE_URL]);
 
-  // Accept ride => assign driver => show handshake => navigate
+  // Accept ride => Assign driver => Show handshake => Navigate
   const handleAcceptRide = async () => {
     if (popupInterval) clearInterval(popupInterval);
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/trips/${currentTrip._id}/assign-driver`,
+        `${BASE_URL}/api/trips/${currentTrip._id}/assign-driver`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ driverId: simulatedDriverId }),
+          body: JSON.stringify({
+            driverId: driverData ? driverData._id : null,
+          }),
         }
       );
 
-      if (!response.ok) throw new Error("Failed to assign driver");
+      if (!response.ok) {
+        throw new Error("Failed to assign driver");
+      }
 
-      // Show the handshake animation
       setShowHandshakeAnimation(true);
+
+      // After 5s, navigate away
       setTimeout(() => {
-        // If you have a dedicated route for "driverride", do so:
-        navigate("/driverride", { state: { driverId: simulatedDriverId } });
+        navigate("/driverride");
       }, 5000);
     } catch (error) {
       console.error("Error:", error);
-      // You can show an error message in the UI
+      // Optionally, display an error message here.
     }
   };
 
-  // Example fare
+  // Example fare calculation
   const calculateFare = (distance) => distance * 15;
+
+  // Compute earnings as returned by the backend
+  const totalEarnings = driverData ? driverData.earnings : 0;
 
   return (
     <div className="mainbg">
       <div className="phoneview driver-container">
+        {/* Top left navigation button */}
+        <button className="points-btn" onClick={handleViewPoints}>
+          View Points
+        </button>
+
         <h2 className="driver-page-title">Driver Dashboard</h2>
 
+        {/* Stats Grid */}
         <div className="stats-grid">
           <div className="stat-card">
             <p className="stat-title">Trips (This Month)</p>
-            <p className="stat-value">{totalTripsThisMonth}</p>
+            <p className="stat-value">
+              {driverData ? driverData.totalTrips : "Loading..."}
+            </p>
           </div>
           <div className="stat-card">
             <p className="stat-title">Earnings (This Month)</p>
-            <p className="stat-value">₹ {totalEarningsThisMonth}</p>
+            <p className="stat-value">₹ 48000</p>
           </div>
-          <div
-            className="stat-card clickable"
-            onClick={() => navigate("/overalltrips")}
-          >
+          <div className="stat-card">
             <p className="stat-title">Overall Trips</p>
-            <p className="stat-value">{overallTotalTrips}</p>
+            <p className="stat-value">
+              {driverData ? driverData.totalTrips : "Loading..."}
+            </p>
           </div>
-          <div
-            className="stat-card clickable"
-            onClick={() => navigate("/points")}
-          >
+          <div className="stat-card">
             <p className="stat-title">Total Points</p>
-            <p className="stat-value">{totalPoints}</p>
+            <p className="stat-value">
+              {driverData ? driverData.points : "Loading..."}
+            </p>
           </div>
         </div>
 
+        {/* Driver Info */}
+        <div>
+          <p>Hotspots of the day with potential profit</p>
+          <ol>
+            <li>Airport - 5000</li>
+            <li>Offices - 4000</li>
+            <li>Residential- 2500</li>
+          </ol>
+        </div>
         <div className="driver-info">
-          <p>Driver Name: {driverName}</p>
-          <p>Vehicle Number: {vehicleNumber}</p>
-          <p>License Number: {licenseNumber}</p>
+          <p>Driver Name: {driverData ? driverData.name : "Loading..."}</p>
+          <p>
+            Vehicle Number:{" "}
+            {driverData
+              ? driverData.vehicleNumber || "DL9IAR3425"
+              : "Loading..."}
+          </p>
+          <p>
+            License Number:{" "}
+            {driverData
+              ? driverData.licenseNumber || "24J4KJ2H3"
+              : "Loading..."}
+          </p>
         </div>
 
         <button
@@ -158,7 +207,7 @@ const Driver = () => {
           {onDuty ? "ON DUTY" : "OFF DUTY"}
         </button>
 
-        {/* Ride request popup */}
+        {/* Request Popup */}
         {showRequestPopup && currentTrip && (
           <div className="request-popup">
             <h3>
@@ -180,7 +229,7 @@ const Driver = () => {
           </div>
         )}
 
-        {/* Handshake animation popup */}
+        {/* Handshake Animation Popup */}
         {showHandshakeAnimation && (
           <div className="handshake-popup">
             <div className="handshake-content">

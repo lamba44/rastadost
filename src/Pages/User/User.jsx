@@ -1,3 +1,4 @@
+// src/components/User.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,7 +12,7 @@ import "./User.css";
 const User = () => {
   const navigate = useNavigate();
 
-  // State definitions (pickup, drop, travelMode, etc.)
+  // State definitions
   const [pickup, setPickup] = useState("");
   const [drop, setDrop] = useState("");
   const [travelMode, setTravelMode] = useState("DRIVING");
@@ -22,7 +23,10 @@ const User = () => {
   const [locationError, setLocationError] = useState(null);
   const [mapRef, setMapRef] = useState(null);
 
-  // Geocoding function and get current location (unchanged)
+  // Use environment variable for your backend base URL
+  const BASE_URL = import.meta.env.VITE_BACKEND;
+
+  // Geocoding function
   const geocodeAddress = (address) => {
     return new Promise((resolve, reject) => {
       if (!window.google) {
@@ -46,6 +50,7 @@ const User = () => {
     });
   };
 
+  // Get current location
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -68,6 +73,7 @@ const User = () => {
     }
   }, []);
 
+  // Show route
   const handleShowRoute = async () => {
     if (!pickup || !drop) return;
     try {
@@ -85,6 +91,7 @@ const User = () => {
     }
   };
 
+  // Calculate route
   const calculateRoute = (pickupLoc, dropLoc) => {
     if (!pickupLoc || !dropLoc) return;
     new window.google.maps.DirectionsService().route(
@@ -97,10 +104,9 @@ const User = () => {
         if (status === "OK") {
           setDirections(result);
           const leg = result.routes[0].legs[0];
-          // Save both text and numeric values for distance.
           setRouteInfo({
             distanceText: leg.distance.text,
-            // leg.distance.value is in meters, convert to km:
+            // leg.distance.value is in meters, convert to km
             distanceValue: leg.distance.value / 1000,
             duration: leg.duration.text,
           });
@@ -116,24 +122,21 @@ const User = () => {
     );
   };
 
-  // Modified: Send input data to backend then navigate.
-  // Modified handleBookNow function in User.js
+  // Book Now => create a trip in the backend
   const handleBookNow = async () => {
-    // Ensure required data is available.
     if (!pickup || !drop || !routeInfo) {
       alert("Please enter valid locations and show the route first.");
       return;
     }
     try {
-      // Prepare payload with source, destination, and numeric distance.
       const payload = {
         source: pickup,
         destination: drop,
-        distance: routeInfo.distanceValue, // distance in km
+        distance: routeInfo.distanceValue, // in km
       };
 
-      // POST the trip data to the backend API.
-      const response = await fetch("http://localhost:5000/api/trips", {
+      // Post to your backend using the env var
+      const response = await fetch(`${BASE_URL}/api/trips`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -142,7 +145,6 @@ const User = () => {
       if (response.ok) {
         const trip = await response.json();
         console.log("Trip created:", trip);
-        // Continue to the next step, e.g., navigate to another page.
         navigate("/userride");
       } else {
         const errorData = await response.json();
@@ -155,7 +157,7 @@ const User = () => {
     }
   };
 
-  // Map center: use userLocation if available; otherwise, default to (0,0)
+  // Map center
   const mapCenter = userLocation || { lat: 0, lng: 0 };
 
   return (

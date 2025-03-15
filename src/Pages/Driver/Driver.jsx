@@ -1,14 +1,14 @@
 import React from "react";
-import "./UserView.css";
+import "./Driver.css";
 
-const UserView = () => {
+const Driver = () => {
     return (
         <div className="mainbg">
             <div className="phoneview">
-                <h1>User View Page</h1>
+                <h1>Driver Main Page</h1>
             </div>
         </div>
     );
 };
 
-export default UserView;
+export default Driver;

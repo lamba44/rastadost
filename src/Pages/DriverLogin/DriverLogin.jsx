@@ -1,14 +1,14 @@
 import React from "react";
-import "./Login.css";
+import "./DriverLogin.css";
 
-const Login = () => {
+const DriverLogin = () => {
     return (
         <div className="mainbg">
             <div className="phoneview">
-                <h1>Login Page</h1>
+                <h1>Driver Login Here</h1>
             </div>
         </div>
     );
 };
 
-export default Login;
+export default DriverLogin;

@@ -80,7 +80,7 @@
     margin-bottom: 4px;
 }
 
-.driver-info {
+.driver-info-dash {
     width: 100%;
     margin-bottom: 1.5rem;
     margin-top: 24px;
@@ -92,7 +92,7 @@
     gap: 12px;
 }
 
-.driver-info p {
+.driver-info-dash p {
     width: 100%;
     font-size: 0.9rem;
     font-weight: 700;
@@ -136,6 +136,10 @@
 }
 
 .request-popup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     position: absolute;
     bottom: 15%;
     left: 50%;
@@ -146,7 +150,6 @@
     padding: 1rem;
     width: 90%;
     max-width: 320px;
-    text-align: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.3s ease;
 }
@@ -181,7 +184,8 @@
 }
 
 .accept-btn {
-    background-color: #f19d20;
+    width: 100%;
+    background-color: #32cd32;
     color: #14141a;
     border: none;
     border-radius: 6px;
@@ -195,7 +199,7 @@
 }
 
 .accept-btn:hover {
-    background-color: #d88a1e;
+    background-color: #169d16;
 }
 
 /* Request popup */
@@ -210,6 +214,10 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 1000;
+}
+
+.request-popup p {
+    font-weight: 500;
 }
 
 /* Handshake popup overlay */
@@ -250,4 +258,94 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.distmoney {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    gap: 12px;
+}
+
+.distmoney p {
+    width: 100%;
+    padding: 8px;
+    background-color: lightblue;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.dutytoggle {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.dutytoggle p {
+    font-weight: 700;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: red;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #fff;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #32cd32;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #32cd32;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
 }

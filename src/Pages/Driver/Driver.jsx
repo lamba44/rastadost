@@ -143,7 +143,6 @@ const Driver = () => {
         <div className="mainbg">
             <div className="phoneview driver-container">
                 <h2 className="driver-page-title">Driver Dashboard</h2>
-
                 {/* Stats Grid */}
                 <div className="stats-grid">
                     <div className="stat-card">
@@ -172,7 +171,6 @@ const Driver = () => {
                         </p>
                     </div>
                 </div>
-
                 {/* Driver Info */}
                 <div className="hotspots">
                     <p>Hotspots with potential earnings:</p>
@@ -182,7 +180,7 @@ const Driver = () => {
                         <li>District C: +₹2500</li>
                     </ul>
                 </div>
-                <div className="driver-info">
+                <div className="driver-info-dash">
                     <p>
                         Driver: <br />{" "}
                         {driverData ? driverData.name : "Loading..."}
@@ -201,14 +199,18 @@ const Driver = () => {
                     </p>
                 </div>
 
-                <button
-                    className={`duty-toggle-btn ${
-                        onDuty ? "on-duty" : "off-duty"
-                    }`}
-                    onClick={handleDutyToggle}
-                >
-                    {onDuty ? "ON DUTY" : "OFF DUTY"}
-                </button>
+                <div className="dutytoggle">
+                    <p>Off Duty</p>
+                    <label className="switch">
+                        <input
+                            type="checkbox"
+                            checked={onDuty}
+                            onChange={handleDutyToggle}
+                        />
+                        <span className="slider round"></span>
+                    </label>
+                    <p>On Duty</p>
+                </div>
 
                 {/* Request Popup */}
                 {showRequestPopup && currentTrip && (
@@ -217,15 +219,17 @@ const Driver = () => {
                             Incoming Ride Request <span>({countdown}s)</span>
                         </h3>
                         <p>Trip ID: {currentTrip._id}</p>
-                        <p>Source: {currentTrip.source}</p>
-                        <p>Destination: {currentTrip.destination}</p>
-                        <p>Distance: {currentTrip.distance} km</p>
-                        <p>
-                            Estimated Fare: ₹{" "}
-                            {currentTrip.distance
-                                ? calculateFare(currentTrip.distance)
-                                : "N/A"}
-                        </p>
+                        <p>Pickup: {currentTrip.source}</p>
+                        <p>Dropoff: {currentTrip.destination}</p>
+                        <div className="distmoney">
+                            <p>{currentTrip.distance} km</p>
+                            <p>
+                                ₹{" "}
+                                {currentTrip.distance
+                                    ? calculateFare(currentTrip.distance)
+                                    : "N/A"}
+                            </p>
+                        </div>
                         <button
                             className="accept-btn"
                             onClick={handleAcceptRide}
@@ -234,7 +238,6 @@ const Driver = () => {
                         </button>
                     </div>
                 )}
-
                 {/* Handshake Animation Popup */}
                 {showHandshakeAnimation && (
                     <div className="handshake-popup">

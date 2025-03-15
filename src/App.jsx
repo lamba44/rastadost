@@ -9,15 +9,20 @@ const App = () => {
     return (
         <div className="mainbg">
             <div className="phoneview home-container">
+                {/* Logo (first to appear) */}
                 <img
                     src={mainLogo}
                     alt="RastaDost Logo"
-                    className="home-logo"
+                    className="home-logo fade-element fade-delay-1"
                 />
 
-                <h1 className="brand-name">RastaDost</h1>
+                {/* App name (second to appear) */}
+                <h1 className="brand-name fade-element fade-delay-2">
+                    RastaDost
+                </h1>
 
-                <div className="button-group">
+                {/* Button group (third to appear) */}
+                <div className="button-group fade-element fade-delay-3">
                     <button
                         className="login-button"
                         onClick={() => navigate("/userlogin")}

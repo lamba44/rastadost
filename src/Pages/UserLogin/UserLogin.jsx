@@ -12,18 +12,14 @@ const UserLogin = () => {
 
     const [authMode, setAuthMode] = useState("login");
 
-    // Login fields
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    // Register fields
     const [username, setUsername] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    // Password visibility
     const [showPassword, setShowPassword] = useState(false);
 
-    // Success/error states
     const [isSuccess, setIsSuccess] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
 
@@ -36,8 +32,7 @@ const UserLogin = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (isLogin) {
-            // Dummy credentials: sample@mail.com and 12345
-            if (email === "sample@mail.com" && password === "12345") {
+            if (email === "sample@mail.com" && password === "gbh") {
                 setIsSuccess(true);
                 setErrorMsg("");
             } else {
@@ -49,13 +44,12 @@ const UserLogin = () => {
         }
     };
 
-    // On successful login, redirect after 4 seconds
     useEffect(() => {
         let timer;
         if (isSuccess) {
             timer = setTimeout(() => {
                 navigate("/user");
-            }, 4000);
+            }, 2000);
         }
         return () => clearTimeout(timer);
     }, [isSuccess, navigate]);

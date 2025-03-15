@@ -59,9 +59,7 @@ const UserLogin = () => {
             <div className="phoneview userlogin-container">
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <h2 className="auth-title">
-                        {isLogin
-                            ? "Welcome back! Glad to see you, again!"
-                            : "Hello! Register to get started"}
+                        {isLogin ? "Welcome back!" : "Register to get started"}
                     </h2>
 
                     {isLogin && isSuccess ? (

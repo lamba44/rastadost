@@ -19,49 +19,82 @@
 }
 
 .driver-panel {
-    background-color: #fff;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
-}
-
-.ride-title {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    text-align: center;
-    color: #14141a;
+    background-color: #ccc;
+    border-radius: 8px;
+    padding: 0.75rem;
 }
 
 .driver-info {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.pfpimg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.driver-info img {
+    height: 40px;
+    width: 40px;
+    margin-right: 8px;
 }
 
 .info-text {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #333;
+}
+
+.trip-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px;
+
+    margin-bottom: 12px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.totext {
+    font-weight: 500;
 }
 
 .ride-actions {
     display: flex;
     justify-content: space-around;
-    gap: 1rem;
+    gap: 12px;
+}
+
+.distleft {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.95rem;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    background-color: #e6e8e6;
+}
+
+.safety-btn,
+.endride-btn {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
 }
 
 .safety-btn {
     background-color: #e74c3c;
     color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
 }
 
 .safety-btn:hover {
@@ -71,14 +104,6 @@
 .endride-btn {
     background-color: #f19d20;
     color: #14141a;
-    border: none;
-    border-radius: 6px;
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
 }
 
 .endride-btn:hover {

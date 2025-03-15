@@ -1,111 +1,121 @@
 .mainbg {
-  background: #f5f5f5;
-  height: 100vh;
-  width: 100vw;
+    background: #f5f5f5;
+    height: 100vh;
+    width: 100vw;
 }
 
 .phoneview {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .user-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 /* Map area: shows the live Google Map */
 .map-area {
-  flex: 1;
-  margin: 1rem;
-  border: 2px dashed #ccc;
-  border-radius: 6px;
-  overflow: hidden;
-  position: relative;
+    flex: 1;
+    margin: 1rem;
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
 }
 
 /* Booking panel: bottom panel with inputs and buttons */
 .booking-panel {
-  background-color: #fff;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ccc;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .booking-title {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #14141a;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #14141a;
 }
 
 .location-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .input-wrapper {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .input-wrapper label {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+    color: #666;
 }
 
 .input-wrapper input {
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
+    padding: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 
 .estimates-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
+    margin-bottom: 1rem;
 }
 
 .estimate-text {
-  font-size: 0.9rem;
-  color: #333;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #248a6c;
 }
 
 .book-btn,
 .showroute-btn {
-  width: 100%;
-  padding: 0.8rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 6px;
-  background-color: #248a6c;
-  color: #ffffff;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: background-color 0.3s ease;
-  margin-top: 0.5rem;
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
 }
 
-.book-btn:hover,
-.showroute-btn:hover {
-  background-color: #1f7359;
+.book-btn {
+    background-color: #14141a;
+    color: #fff;
+}
+
+.showroute-btn {
+    background-color: #fff;
+    color: #14141a;
+    margin-bottom: 1rem;
 }
 
 .map-error-banner {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  background: rgba(255, 200, 0, 0.9);
-  color: #000;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    background: rgba(255, 200, 0, 0.9);
+    color: #000;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
 }

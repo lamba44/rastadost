@@ -1,101 +1,134 @@
-.driverride-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
+/* Use the same container styles as UserRide */
+.userride-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
 }
 
 .map-area {
-  flex: 1;
-  background-color: #e0f7fa;
-  border: 2px dashed #ccc;
-  border-radius: 6px;
-  margin: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.95rem;
-  color: #666;
+    flex: 1;
+    background-color: #e0f7fa;
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    margin: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    color: #666;
 }
 
-.ride-panel {
-  background-color: #fff;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
+.driver-panel {
+    background-color: #ccc;
+    border-radius: 8px;
+    padding: 0.75rem;
 }
 
-.ride-title {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #14141a;
+.driver-info {
+    display: flex;
+    font-weight: 600;
+    margin-bottom: 12px;
 }
 
-.user-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+.pfpimg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.driver-info img {
+    height: 40px;
+    width: 40px;
+    margin-right: 8px;
 }
 
 .info-text {
-  font-size: 0.9rem;
-  color: #333;
+    font-size: 0.8rem;
+    color: #333;
+}
+
+.trip-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    margin-bottom: 12px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.totext {
+    font-weight: 500;
 }
 
 .ride-actions {
-  display: flex;
-  justify-content: space-around;
-  gap: 1rem;
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
 }
 
-.support-btn {
-  background-color: #e74c3c;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.8rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: background-color 0.3s ease;
+.distleft {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.95rem;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    background-color: #e6e8e6;
 }
 
-.support-btn:hover {
-  background-color: #c0392b;
+.safety-btn,
+.endride-btn {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.safety-btn {
+    background-color: #e74c3c;
+    color: #ffffff;
+}
+
+.safety-btn:hover {
+    background-color: #c0392b;
 }
 
 .endride-btn {
-  background-color: #f19d20;
-  color: #14141a;
-  border: none;
-  border-radius: 6px;
-  padding: 0.8rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: background-color 0.3s ease;
+    background-color: #f19d20;
+    color: #14141a;
 }
 
 .endride-btn:hover {
-  background-color: #c87d19;
+    background-color: #c87d19;
 }
 
-.driverride-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+/* Optional: Maintain full-screen container consistency */
+.mainbg {
+    height: 100vh;
+    background-color: #f8f8f8;
 }
 
-/* The map can take a fixed height or flex */
-.map-area {
-  flex: 1; /* so it can expand */
-  position: relative;
-  min-height: 300px;
-  border: 1px solid #ccc;
-  margin-bottom: 1rem;
+.loading {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.map-error-banner {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffcccc;
+    color: #990000;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: bold;
 }

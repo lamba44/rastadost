@@ -1,0 +1,153 @@
+.userlogin-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 1rem;
+}
+
+.auth-form {
+    width: 85%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.auth-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #14141a;
+    margin-bottom: 0.5rem;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: -0.5rem;
+}
+
+.success-text {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #248a6c;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.input-label {
+    font-size: 0.8rem;
+    color: #666666;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #333;
+    outline: none;
+}
+
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-pw-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.toggle-pw-icon {
+    height: 40px;
+}
+
+.forgot-pw {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.3rem;
+    cursor: pointer;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #14141a;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.go-back-btn {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 0.9rem;
+    border: 2px solid #14141a;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #14141a;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 40px;
+}
+
+.divider {
+    text-align: center;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.social-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+.social-icon {
+    width: 100%;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #dddddd;
+}
+
+.social-icon img {
+    height: 60%;
+}
+
+.switch-auth {
+    font-size: 0.8rem;
+    color: #666;
+    text-align: center;
+}
+
+.switch-link {
+    color: #248a6c;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 0.2rem;
+}
+
+.switch-link:hover {
+    text-decoration: underline;
+}

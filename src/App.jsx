@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
+import mainLogo from "./assets/logo.png";
 
 const App = () => {
     const navigate = useNavigate();
@@ -8,7 +9,14 @@ const App = () => {
     return (
         <div className="mainbg">
             <div className="phoneview home-container">
-                <h1 className="home-title">Welcome to RastaDost</h1>
+                <img
+                    src={mainLogo}
+                    alt="RastaDost Logo"
+                    className="home-logo"
+                />
+
+                <h1 className="brand-name">RastaDost</h1>
+
                 <div className="button-group">
                     <button
                         className="login-button"

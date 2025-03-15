@@ -1,3 +1,4 @@
+// src/components/UserRide.jsx
 import React, { useState, useEffect } from "react";
 import {
   GoogleMap,
@@ -8,22 +9,44 @@ import {
 import "./UserRide.css";
 
 const UserRide = () => {
-  // Dummy driver details
-  const driverName = "Rahul Sharma";
-  const carNumber = "KA05AB9999";
-  const phoneNumber = "9876543210";
-  const rating = 4.7;
+  const [activeTrip, setActiveTrip] = useState(null);
+  const [tripError, setTripError] = useState(null);
 
-  // Map & route state
+  // For map and route
   const [mapRef, setMapRef] = useState(null);
   const [directions, setDirections] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [locationError, setLocationError] = useState(null);
 
-  // State to hold the first trip from the reversed data
-  const [firstTrip, setFirstTrip] = useState(null);
+  // 1) Poll for the active trip
+  useEffect(() => {
+    const fetchActiveTrip = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/trips/active");
+        if (response.ok) {
+          const trip = await response.json();
+          setActiveTrip(trip);
+          setTripError(null);
+          console.log("Active trip fetched:", trip);
+        } else {
+          const errorData = await response.json();
+          console.error("Active Trip Error:", errorData.message);
+          setTripError(errorData.message);
+          setActiveTrip(null);
+        }
+      } catch (error) {
+        console.error("Error fetching active trip:", error);
+        setTripError("Error fetching active trip.");
+        setActiveTrip(null);
+      }
+    };
 
-  // Utility function to geocode an address
+    fetchActiveTrip();
+    const intervalId = setInterval(fetchActiveTrip, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // 2) Utility: geocode an address
   const geocodeAddress = (address) => {
     return new Promise((resolve, reject) => {
       if (!window.google) {
@@ -36,18 +59,14 @@ const UserRide = () => {
           if (status === "OK" && results[0]) {
             resolve(results[0].geometry.location);
           } else {
-            reject(
-              status === "ZERO_RESULTS"
-                ? "Address not found"
-                : `Geocode error: ${status}`
-            );
+            reject(`Geocode error: ${status}`);
           }
         }
       );
     });
   };
 
-  // Calculate the route between two locations.
+  // 3) Calculate route
   const calculateRoute = (origin, destination) => {
     if (!origin || !destination) return;
     new window.google.maps.DirectionsService().route(
@@ -70,42 +89,17 @@ const UserRide = () => {
     );
   };
 
-  // Fetch all trips and then reverse the array to select the first one from the reversed data.
+  // 4) When activeTrip changes, load the map route
   useEffect(() => {
-    const fetchTrips = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/trips");
-        if (response.ok) {
-          const trips = await response.json();
-          console.log("Fetched trips:", trips); // Debug: Check what is returned.
-          if (trips.length > 0) {
-            // Reverse the fetched data and select the first trip from the reversed list.
-            const reversedTrips = trips.reverse();
-            setFirstTrip(reversedTrips[0]);
-          } else {
-            console.error("No trips found");
-          }
-        } else {
-          console.error("Failed to fetch trip data");
-        }
-      } catch (error) {
-        console.error("Error fetching trips:", error);
-      }
-    };
+    if (!activeTrip) return;
 
-    fetchTrips();
-  }, []);
-
-  // Once the firstTrip is fetched, set up the map using its source and destination.
-  useEffect(() => {
-    if (!firstTrip) return;
     const loadTripRoute = async () => {
       try {
-        const origin = await geocodeAddress(firstTrip.source);
-        const destination = await geocodeAddress(firstTrip.destination);
+        const origin = await geocodeAddress(activeTrip.source);
+        const destination = await geocodeAddress(activeTrip.destination);
         setMarkers([
-          { label: firstTrip.source, position: origin },
-          { label: firstTrip.destination, position: destination },
+          { label: activeTrip.source, position: origin },
+          { label: activeTrip.destination, position: destination },
         ]);
         calculateRoute(origin, destination);
       } catch (error) {
@@ -114,13 +108,12 @@ const UserRide = () => {
       }
     };
 
-    // Ensure the Google Maps API is loaded before trying to geocode.
     if (window.google) {
       loadTripRoute();
     }
-  }, [firstTrip, mapRef]);
+  }, [activeTrip, mapRef]);
 
-  // Set center to the origin marker if available, otherwise a default coordinate.
+  // 5) Center on the first marker or fallback
   const mapCenter =
     markers.length > 0 ? markers[0].position : { lat: 19.076, lng: 72.8777 };
 
@@ -165,15 +158,23 @@ const UserRide = () => {
           )}
         </div>
 
-        {/* Bottom panel with driver details */}
+        {/* Bottom panel */}
         <div className="driver-panel">
           <h2 className="ride-title">Your Ride</h2>
-          <div className="driver-info">
-            <p className="info-text">Driver: {driverName}</p>
-            <p className="info-text">Car Number: {carNumber}</p>
-            <p className="info-text">Phone: {phoneNumber}</p>
-            <p className="info-text">Rating: {rating} ★</p>
-          </div>
+
+          {/* Display "John Doe" if there's an active trip. Otherwise, show "Locating your ride..." */}
+          {activeTrip ? (
+            <div className="driver-info">
+              <p>
+                <strong>Driver:</strong> John Doe
+              </p>
+              {/* You can hardcode more details here if you want */}
+            </div>
+          ) : (
+            <div className="loading">
+              {tripError ? `Error: ${tripError}` : "Locating your ride..."}
+            </div>
+          )}
 
           {/* Action buttons */}
           <div className="ride-actions">
@@ -187,7 +188,7 @@ const UserRide = () => {
               className="endride-btn"
               onClick={() =>
                 alert(
-                  "User ended the ride. Waiting for driver to also end the ride. (Demo)"
+                  "User ended the ride. Waiting for driver to also end. (Demo)"
                 )
               }
             >
@@ -195,20 +196,22 @@ const UserRide = () => {
             </button>
           </div>
 
-          {/* Display the first trip data from MongoDB */}
-          {firstTrip && (
+          {/* Display the active trip data */}
+          {activeTrip ? (
             <div className="trip-info">
               <h3>Trip Data:</h3>
               <p>
-                <strong>Source:</strong> {firstTrip.source}
+                <strong>Source:</strong> {activeTrip.source}
               </p>
               <p>
-                <strong>Destination:</strong> {firstTrip.destination}
+                <strong>Destination:</strong> {activeTrip.destination}
               </p>
               <p>
-                <strong>Distance:</strong> {firstTrip.distance} km
+                <strong>Distance:</strong> {activeTrip.distance} km
               </p>
             </div>
+          ) : (
+            <div className="loading">No active trip at the moment.</div>
           )}
         </div>
       </div>

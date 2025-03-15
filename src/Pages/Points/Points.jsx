@@ -2,9 +2,8 @@ import React from "react";
 import "./Points.css";
 
 const Points = () => {
-    //Sample Data
-    const averageTripEarning = 160; // in rupees
-    const monthlyEarning = 48000; // in rupees
+    const averageTripEarning = 160;
+    const monthlyEarning = 48000;
     const points = 9000;
     const rating = 5; // out of 5
 
@@ -31,18 +30,23 @@ const Points = () => {
                     </div>
                     <div className="bonus-section">
                         <h2>Bonus Calculation</h2>
-                        <p className="calculation">
-                            Formula: [ (points / 10000) × (rating / 2) ]% of
-                            monthly earning
-                        </p>
-                        <p className="calculation">
-                            Calculation: [ ({points} / 10000) × ({rating} / 2)
-                            ]% = {bonusPercent.toFixed(2)}%
-                        </p>
-                        <p className="calculation">
-                            Bonus: {bonusPercent.toFixed(2)}% of ₹
-                            {monthlyEarning} = ₹{bonusCash.toFixed(2)}
-                        </p>
+                        <div className="formula-box">
+                            <p>
+                                <strong>Formula:</strong> [ (points / 10000) ×
+                                (rating / 2) ]% of monthly earning
+                            </p>
+                        </div>
+                        <div className="calculation-box">
+                            <p>
+                                <strong>Calculation:</strong> [ ({points} /
+                                10000) × ({rating} / 2) ]% ={" "}
+                                {bonusPercent.toFixed(2)}%
+                            </p>
+                            <p>
+                                Bonus: {bonusPercent.toFixed(2)}% of ₹
+                                {monthlyEarning} = ₹{bonusCash.toFixed(2)}
+                            </p>
+                        </div>
                         <div className="bonus-highlight">
                             Bonus Cash: ₹{bonusCash.toFixed(2)}
                         </div>

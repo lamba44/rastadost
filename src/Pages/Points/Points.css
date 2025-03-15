@@ -1,4 +1,3 @@
-/* Predefined styles */
 .mainbg {
     height: 100vh;
     background-color: #0a0a0a;
@@ -16,7 +15,6 @@
     overflow-y: auto;
 }
 
-/* New styles for Points component */
 .points-container {
     padding: 20px;
     width: 100%;
@@ -54,14 +52,27 @@
     color: #333;
 }
 
-.calculation {
+.formula-box {
+    background-color: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
     font-size: 14px;
-    margin: 5px 0;
-    color: #555;
+    color: #2e7d32;
+}
+
+.calculation-box {
+    background-color: #fffde7;
+    border: 1px solid #fff59d;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #f9a825;
 }
 
 .bonus-highlight {
-    margin-top: 15px;
     padding: 10px;
     background-color: #e0f7fa;
     border: 2px dashed #00acc1;
